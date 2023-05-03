@@ -1,0 +1,10 @@
+[{
+  "_id":{
+    "$oid":"6422f60f3f8be4fc77bd630d"
+  },
+  "nombre": "Pepito",
+  "nivelHambre": 3,
+  "nivelEnergia": 7,
+  "nivelFelicidad": 8,
+  "fechaNacimiento": "2023-04-28T12:30:00.000Z"
+}]
