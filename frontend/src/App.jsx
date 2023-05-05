@@ -1,35 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import "./App.css";
+// Importamos los componentes necesarios de la librería react-router-dom
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+// Importamos los componentes que vamos a utilizar en cada ruta
+import Home from "./components/Home";
+import Game1 from "./components/rpsls";
+import Game2 from "./components/tamagotchi";
+import Records from "./components/Records";
+// Creamos nuestro componente App
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    // Envolvemos todas nuestras rutas con BrowserRouter
+    <BrowserRouter>
+      {/* Indicamos nuestras rutas utilizando el componente Routes */}
+      <Routes>
+        {/* Definimos una ruta para la página principal, que muestra el 
+componente Home */}
+        <Route path="/" element={<Home />} />
+        {/* Definimos una ruta para el juego 1, que muestra el componente 
+Game1 */}
+        <Route path="/rpsls" element={<Game1 />} />
+        {/* Definimos una ruta para el juego 2, que muestra el componente 
+Game2 */}
+        <Route path="/tamagotchi" element={<Game2 />} />
+        {}
+        <Route path="/records" element={<Records />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

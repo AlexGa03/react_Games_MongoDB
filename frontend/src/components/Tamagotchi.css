@@ -1,0 +1,42 @@
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    background-color: lightgrey;
+    color: white;
+    text-align: center;
+}
+.state{
+    width: 30em;
+    margin: 1em;
+    border: black solid;
+    
+}
+.main{
+    margin-top: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.screen{
+    border: black 2px solid;
+    border-radius: 5em;
+    padding: 2em;
+    background-color: aqua;
+}
+.buttImg{
+    width: 3em;
+    height: 3em;
+}
+.btt{
+    width: 5em;
+    height: 5em;
+    
+}
+.butts{
+    display: flex;
+    justify-content: space-around;
+}
+.stats{
+    text-align: left;
+}
