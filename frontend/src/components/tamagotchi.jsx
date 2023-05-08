@@ -19,12 +19,16 @@ function Tamagotchi() {
   const [energy, setEnergy] = useState(100);
   const [isDead, setIsDead] = useState(false);
   const [isAlive, setIsAlive] = useState(true);
-const [intervalId, setIntervalId] = useState(null);
-
-
+  const [intervalId, setIntervalId] = useState(null);
+  const [date, setDate] = useState("");
   useEffect(() => {
     const intervalId = setInterval(() => {
       if (!isDead) {
+        console.log(age);
+        if (age > 0) {
+          setDate(new Date().toLocaleString());
+          console.log(date);
+        }
         setAge((age) => age + 1);
         setHealth((health) => Math.max(0, health - 5));
         setHappiness((happiness) => Math.max(0, happiness - 5));
@@ -33,11 +37,14 @@ const [intervalId, setIntervalId] = useState(null);
       }
     }, 3000);
     return () => clearInterval(intervalId);
-  },[isDead]);
+  }, [isDead]);
+
   useEffect(() => {
     if (health === 0 || happiness === 0 || hunger === 0 || energy === 0) {
+      console.log("sa muerto");
       setNameEditable(false);
       handleDeath();
+      console.log(isDead);
     }
   }, [health, happiness, hunger]);
 
@@ -66,7 +73,8 @@ const [intervalId, setIntervalId] = useState(null);
     setIsDead(false);
     setHunger(100);
     setHappiness(100);
-    setDiscipline(100);
+    setEnergy(100);
+    setHealth(100);
     setAge(0);
   };
   const handleDeath = () => {
@@ -151,56 +159,53 @@ const [intervalId, setIntervalId] = useState(null);
         <img className="state" src={getFaceStatus(health)}></img>
         <div className="stats">
           <p>Age: {age}</p>
-          <p>
-            Health:
-            <div
-              className="progress-bar"
-              style={{
-                width: `${health}%`,
-                backgroundColor: getBarColor(health),
-              }}
-            >
-              {health}
-            </div>
-          </p>
-          <p>
-            Happiness:
-            <div
-              className="progress-bar"
-              style={{
-                width: `${happiness}%`,
-                backgroundColor: getBarColor(happiness),
-              }}
-            >
-              {happiness}
-            </div>
-          </p>
-          <p>
-            Hunger:
-            <div
-              className="progress-bar"
-              style={{
-                width: `${hunger}%`,
-                backgroundColor: getBarColor(hunger),
-              }}
-            >
-              {hunger}
-            </div>
-          </p>
-          <p>
-            Energy:
-            <div
-              className="progress-bar"
-              style={{
-                width: `${energy}%`,
-                backgroundColor: getBarColor(energy),
-              }}
-            >
-              {energy}
-            </div>
-          </p>
+          <p className="mt-4">Fecha de nacimiento: {date}</p>
+
+          <p>Health:</p>
+          <div
+            className="progress-bar"
+            style={{
+              width: `${health}%`,
+              backgroundColor: getBarColor(health),
+            }}
+          >
+            {health}
+          </div>
+
+          <p>Happiness:</p>
+          <div
+            className="progress-bar"
+            style={{
+              width: `${happiness}%`,
+              backgroundColor: getBarColor(happiness),
+            }}
+          >
+            {happiness}
+          </div>
+
+          <p>Hunger:</p>
+          <div
+            className="progress-bar"
+            style={{
+              width: `${hunger}%`,
+              backgroundColor: getBarColor(hunger),
+            }}
+          >
+            {hunger}
+          </div>
+
+          <p>Energy:</p>
+          <div
+            className="progress-bar"
+            style={{
+              width: `${energy}%`,
+              backgroundColor: getBarColor(energy),
+            }}
+          >
+            {energy}
+          </div>
         </div>
-        {health === 0 || happiness === 0 || hunger === 0 || energy === 0? (
+        {health === 0 || happiness === 0 || hunger === 0 || energy === 0 ? (
           <div>
             <p>Your Tamagotchi has died.</p>
           </div>
@@ -217,8 +222,15 @@ const [intervalId, setIntervalId] = useState(null);
                 <img className="buttImg" src={sleepImg}></img>
               </button>
             </div>
-            {isDead && <button onClick={handleRestart}>Restart</button>}
           </div>
+        )}
+        {isDead && (
+          <button
+            onClick={handleRestart}
+            className="mt-7 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded "
+          >
+            Restart
+          </button>
         )}
       </div>
       <Link to="/">
