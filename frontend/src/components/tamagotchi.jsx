@@ -21,27 +21,36 @@ function Tamagotchi() {
   const [isAlive, setIsAlive] = useState(true);
   const [intervalId, setIntervalId] = useState(null);
   const [date, setDate] = useState("");
+  const [canInteract, setCanInteract] = useState(false);
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       if (!isDead) {
         console.log(age);
-        if (age > 0) {
-          setDate(new Date().toLocaleString());
-          console.log(date);
-        }
+        
         setAge((age) => age + 1);
         setHealth((health) => Math.max(0, health - 5));
         setHappiness((happiness) => Math.max(0, happiness - 5));
         setHunger((hunger) => Math.max(0, hunger - 5));
         setEnergy((energy) => Math.max(0, energy - 5));
+        
       }
     }, 3000);
     return () => clearInterval(intervalId);
   }, [isDead]);
+  useEffect(()=>{
+    if (age > 0 && date == "") {
+      setDate(new Date().toLocaleString());
+      console.log(date);
+    }
+    if (age >= 1) {
+      setCanInteract(true);
+    }
+  },[age]);
 
   useEffect(() => {
     if (health === 0 || happiness === 0 || hunger === 0 || energy === 0) {
-      console.log("sa muerto");
+      console.log("dead");
       setNameEditable(false);
       handleDeath();
       console.log(isDead);
@@ -76,29 +85,64 @@ function Tamagotchi() {
     setEnergy(100);
     setHealth(100);
     setAge(0);
+    setDate("");
   };
   const handleDeath = () => {
     clearInterval(intervalId);
     setIsDead(true);
+     // Datos a enviar a la API
+  const tamagotchiData = {
+    fechaNacimiento: date,
+    nombre: name,
+    nivelHambre: hunger,
+    nivelEnergia: energy,
+    nivelFelicidad: happiness,
+  };
+
+  // Realizar la solicitud POST a la API
+  fetch('http://localhost:3000/mascotas', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(tamagotchiData),
+  })
+    .then((response) => {
+      // Manejar la respuesta de la API
+      if (response.ok) {
+        console.log('Datos del Tamagotchi enviados correctamente.');
+      } else {
+        console.log('Error al enviar los datos del Tamagotchi.');
+      }
+    })
+    .catch((error) => {
+      console.log('Error en la solicitud POST:', error);
+    });
   };
 
   const feed = () => {
+    if (canInteract) {
     setHealth((health) => Math.min(100, health + 5));
     setHunger((hunger) => Math.min(100, hunger + 20));
     setHappiness((happiness) => Math.min(100, happiness + 5));
     setEnergy((energy) => Math.min(100, energy + 5));
+    }
   };
   const play = () => {
+    if (canInteract) {
     setHappiness((happiness) => Math.min(100, happiness + 20));
     setHealth((health) => Math.min(100, health - 5));
     setHunger((hunger) => Math.min(100, hunger - 5));
     setEnergy((energy) => Math.max(0, energy - 20));
+    }
   };
   const sleep = () => {
+    if (canInteract) {
     setHappiness((happiness) => Math.min(100, happiness - 5));
     setHealth((health) => Math.min(100, health + 10));
     setHunger((hunger) => Math.min(100, hunger - 5));
     setEnergy((energy) => Math.min(100, energy + 10));
+    }
   };
   const getBarColor = (value) => {
     if (value > 80) {
@@ -120,6 +164,10 @@ function Tamagotchi() {
       return dead;
     }
   };
+  const getLowestStatusValue = () => {
+    return Math.min(health, happiness, hunger, energy);
+  };
+  
   return (
     <div className="main">
       <div className="screen">
@@ -156,7 +204,7 @@ function Tamagotchi() {
             </>
           )}
         </h1>
-        <img className="state" src={getFaceStatus(health)}></img>
+        <img className="state" src={getFaceStatus(getLowestStatusValue())}></img>
         <div className="stats">
           <p>Age: {age}</p>
           <p className="mt-4">Fecha de nacimiento: {date}</p>
@@ -210,6 +258,7 @@ function Tamagotchi() {
             <p>Your Tamagotchi has died.</p>
           </div>
         ) : (
+          
           <div>
             <div className="butts">
               <button className="btt" onClick={feed}>
